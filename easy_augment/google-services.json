@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "49674326450",
+    "firebase_url": "https://easy-augment.firebaseio.com",
+    "project_id": "easy-augment",
+    "storage_bucket": "easy-augment.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49674326450:android:9bee885c1d8acf86ce54ab",
+        "android_client_info": {
+          "package_name": "com.liminal.easy_augment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "49674326450-d6gn9uue5vlmqesr7attqqiggplu28cl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-h35JGjRFEtFn2SDkDZ-vDX6hIWX0gMM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "49674326450-d6gn9uue5vlmqesr7attqqiggplu28cl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,2 @@
+include ':app', ':easy_augment'
+rootProject.name='Easy_Augment_Example'
