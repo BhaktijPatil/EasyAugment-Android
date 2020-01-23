@@ -1,5 +1,6 @@
 package com.liminal.easy_augment;
 
+// Import statements
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -22,15 +23,12 @@ import com.google.ar.sceneform.ux.ArFragment;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Extend the ArFragment to customize the ARCore session configuration to include Augmented Images.
- */
+// Extend the ArFragment to customize the ARCore session configuration to include Augmented Images.
+
 public class AugmentedImageFragment extends ArFragment {
     private static final String TAG = "AugmentedImageFragment";
 
-    // This is the name of the image in the sample database.  A copy of the image is in the assets
-    // directory.  Opening this image on your computer is a good quick way to test the augmented image
-    // matching.
+    // This is the name of the image in the sample database.  A copy of the image is in the assetsdirectory.
     private static final String DEFAULT_IMAGE_NAME = "default.jpg";
 
     // This is a pre-created database containing the sample image.
@@ -40,8 +38,7 @@ public class AugmentedImageFragment extends ArFragment {
     // Load a single image (true) or a pre-generated image database (false).
     private static final boolean USE_SINGLE_IMAGE = true;
 
-    // Do a runtime check for the OpenGL level available at runtime to avoid Sceneform crashing the
-    // application.
+    // Do a runtime check for the OpenGL level available at runtime to avoid Sceneform crashing the application.
     private static final double MIN_OPENGL_VERSION = 3.0;
 
 //    // Uri that stores the path of the target image chosen from device storage
@@ -57,6 +54,7 @@ public class AugmentedImageFragment extends ArFragment {
             Log.e(TAG, "Sceneform requires Android N or later");
         }
 
+        // Check for openGL version
         String openGlVersionString = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getDeviceConfigurationInfo().getGlEsVersion();
         if (Double.parseDouble(openGlVersionString) < MIN_OPENGL_VERSION) {
             Log.e(TAG, "Sceneform requires OpenGL ES 3.0 or later");
@@ -64,10 +62,8 @@ public class AugmentedImageFragment extends ArFragment {
     }
 
     @Override
-    public View onCreateView(
-            LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-
         // Turn off the plane discovery since we're only looking for images
         getPlaneDiscoveryController().hide();
         getPlaneDiscoveryController().setInstructionView(null);

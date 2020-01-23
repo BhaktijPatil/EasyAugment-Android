@@ -6,15 +6,15 @@
         android:glEsVersion="0x00030000"
         android:required="true" /> <!-- Always needed for AR. -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature
         android:name="android.hardware.camera.ar"
         android:required="true" />
+
     <application>
-        <activity android:name=".ScanActivity"></activity>
-
-
+        <activity android:name=".RedirectWeb" />
+        <activity android:name=".ScanActivity" />
         <!--
          Indicates that this app requires Google Play Services for AR ("AR Required") and causes
                  the Google Play Store to download and intall Google Play Services for AR along with
@@ -24,4 +24,5 @@
             android:name="com.google.ar.core"
             android:value="optional" />
     </application>
+
 </manifest>

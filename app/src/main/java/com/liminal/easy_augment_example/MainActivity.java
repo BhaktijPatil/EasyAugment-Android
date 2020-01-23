@@ -1,15 +1,15 @@
 package com.liminal.easy_augment_example;
 
+// Import statements
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.liminal.easy_augment.ScanActivity;
+import com.liminal.easy_augment.ScanActivityHelper;
 
+// Main activity
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -18,15 +18,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Toast.makeText(MainActivity.this,"HERE",Toast.LENGTH_SHORT).show();
-                Intent scan = new Intent(MainActivity.this, ScanActivity.class);
-                startActivity(scan);
-            }
+        button.setOnClickListener(view -> {
+            Intent scan = ScanActivityHelper.getIntent(this, "https://www.oculus.com/");
+            startActivity(scan);
         });
     }
 }
