@@ -15,9 +15,6 @@ import com.google.ar.sceneform.ux.ArFragment;
 
 import java.util.Collection;
 
-import static com.liminal.easy_augment.ScanActivityHelper.isWebsite;
-
-
 // Scan Activity
 public class ScanActivity extends AppCompatActivity {
 
@@ -26,15 +23,17 @@ public class ScanActivity extends AppCompatActivity {
     // These variables are obtained from the application
     private String redirect;
     private String packageName;
+    private String redirect_to;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
 
+        // Get intent allows us to retrieve strings from the calling activity
+        redirect_to = getIntent().getStringExtra("REDIRECT_TO");
         redirect = getIntent().getStringExtra("REDIRECT");
         packageName = getIntent().getStringExtra("PACKAGE_NAME");
-
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
     }
@@ -47,7 +46,6 @@ public class ScanActivity extends AppCompatActivity {
     //This method is called at the start of each frame. @param frameTime = time since last frame.
     private void onUpdateFrame(FrameTime frameTime) {
         Frame frame = arFragment.getArSceneView().getArFrame();
-
         // If there is no frame, just return.
         if (frame == null) {
             return;
@@ -59,21 +57,29 @@ public class ScanActivity extends AppCompatActivity {
             switch (augmentedImage.getTrackingState()) {
                 case PAUSED:
                     // When an image is in PAUSED state it has been detected.
-                    if(isWebsite(redirect))
+                    if(redirect_to.equals("website"))
                     {
                         // Open website specified by user
                         Intent newWebActivity = new Intent(this, RedirectWeb.class);
                         newWebActivity.putExtra("WEBSITE", redirect);
                         startActivity(newWebActivity);
-                        Log.d("WEB_DETECT","Website is detected");
+                        Log.d("REDIRECT_TO","Redirecting to Website : " + redirect);
                     }
-                    else
+                    else if(redirect_to.equals("activity"))
                     {
                         // Open activity specified by user
                         ComponentName cn = new ComponentName(this,packageName + "." + redirect);
                         Intent newActivity = new Intent().setComponent(cn);
                         startActivity(newActivity);
-                        Log.d("WEB_DETECT","Website is not detected");
+                        Log.d("REDIRECT_TO","Redirecting to Activity : " + redirect);
+                    }
+                    else
+                    {
+                        // Open website specified by user
+                        Intent newVideoActivity = new Intent(this, RedirectWeb.class);
+                        newVideoActivity.putExtra("VIDEO_URL", redirect);
+                        startActivity(newVideoActivity);
+                        Log.d("REDIRECT_TO","Redirecting to Video : " + redirect);
                     }
                 case TRACKING:
                 case STOPPED:

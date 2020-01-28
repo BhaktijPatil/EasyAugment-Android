@@ -97,7 +97,7 @@ public class AugmentedImageFragment extends ArFragment {
         // * shorter setup time
         // * doesn't require images to be packaged in apk.
         if (USE_SINGLE_IMAGE) {
-            Bitmap augmentedImageBitmap = loadAugmentedImageBitmap(assetManager);
+            Bitmap augmentedImageBitmap = ImageStore.loadRefImage();
             if (augmentedImageBitmap == null) {
                 return false;
             }
