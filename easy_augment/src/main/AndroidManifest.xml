@@ -13,6 +13,7 @@
         android:required="true" />
 
     <application>
+        <activity android:name=".RedirectVideo"></activity>
         <activity android:name=".RedirectWeb" />
         <activity android:name=".ScanActivity" />
         <!--
