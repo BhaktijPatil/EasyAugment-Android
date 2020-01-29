@@ -1,13 +1,15 @@
 package com.liminal.easy_augment_example;
 
 // Import statements
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.liminal.easy_augment.ImageStore;
 import com.liminal.easy_augment.ScanActivityHelper;
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        Log.d("EA V-0.4", "App start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
