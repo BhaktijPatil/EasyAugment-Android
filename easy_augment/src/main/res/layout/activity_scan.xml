@@ -17,6 +17,6 @@
         android:layout_gravity="center"
         android:contentDescription="@string/fit_image_to_scan"
         android:scaleType="fitXY"
-        android:src="@drawable/scan" />
+        android:src="@drawable/scan_template" />
 
 </FrameLayout>
