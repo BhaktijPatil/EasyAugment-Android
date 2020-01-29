@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         // load the reference images that needs scanning
         ArrayList<Bitmap> refImageList = new ArrayList<>();
         refImageList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.ferrari_logo));
-        refImageList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.modi_logo));
         refImageList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.lamborghini_logo));
         ImageStore.storeRefImage(this, refImageList);
 
