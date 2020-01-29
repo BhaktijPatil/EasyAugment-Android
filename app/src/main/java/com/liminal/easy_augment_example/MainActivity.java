@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // load the reference image that needs scanning
-        Bitmap refBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.default_img);
+        Bitmap refBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.logo);
         ImageStore.storeRefImage(this, refBitmap);
 
         Button button = findViewById(R.id.button);
