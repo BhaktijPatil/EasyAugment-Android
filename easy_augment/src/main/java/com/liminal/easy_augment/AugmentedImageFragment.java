@@ -66,16 +66,19 @@ public class AugmentedImageFragment extends ArFragment {
     }
 
     private boolean setupAugmentedImageDatabase(Config config, Session session) {
-        // Load the reference image into an bitmap
-        Bitmap augmentedImageBitmap = ImageStore.loadRefImage();
-
-        if (augmentedImageBitmap == null)
-            return false;
-
         // Create Augmented image database and add the reference image to it
         AugmentedImageDatabase augmentedImageDatabase = new AugmentedImageDatabase(session);
-        augmentedImageDatabase.addImage("Reference_Image.jpg", augmentedImageBitmap);
+        // Load the reference images into the database
+        int imageCount = 0;
+        for(Bitmap augmentedImageBitmap : ImageStore.loadRefImage())
+        {
+            imageCount += 1;
+            if (augmentedImageBitmap == null)
+                return false;
 
+            augmentedImageDatabase.addImage("Ref_Img_" + imageCount + ".jpg", augmentedImageBitmap);
+
+        }
         config.setAugmentedImageDatabase(augmentedImageDatabase);
         return true;
     }

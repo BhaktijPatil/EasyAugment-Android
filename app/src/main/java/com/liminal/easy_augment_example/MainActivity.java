@@ -12,6 +12,8 @@ import android.widget.Button;
 import com.liminal.easy_augment.ImageStore;
 import com.liminal.easy_augment.ScanActivityHelper;
 
+import java.util.ArrayList;
+
 // Main activity
 public class MainActivity extends AppCompatActivity {
 
@@ -21,9 +23,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // load the reference image that needs scanning
-        Bitmap refBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.logo);
-        ImageStore.storeRefImage(this, refBitmap);
+        // load the reference images that needs scanning
+        ArrayList<Bitmap> refImageList = new ArrayList<>();
+        refImageList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.ferrari_logo));
+        refImageList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.modi_logo));
+        refImageList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.lamborghini_logo));
+        ImageStore.storeRefImage(this, refImageList);
+
+//        // load the reference image that needs scanning
+//        Bitmap refBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.modi_logo);
+//        ImageStore.storeRefImage(this, refBitmap);
 
         Button button = findViewById(R.id.button);
         button.setOnClickListener(view -> {
