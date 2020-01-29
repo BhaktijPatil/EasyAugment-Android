@@ -1,10 +1,9 @@
 package com.liminal.easy_augment;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.widget.MediaController;
 import android.widget.VideoView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class RedirectVideo extends AppCompatActivity {
 
@@ -17,7 +16,7 @@ public class RedirectVideo extends AppCompatActivity {
         String video_link = getIntent().getStringExtra("VIDEO_URL");
 
 
-        VideoView videoView=(VideoView)findViewById(R.id.videoView);
+        VideoView videoView= findViewById(R.id.videoView);
         videoView.setVideoPath(video_link);
         videoView.start();
     }
