@@ -3,10 +3,7 @@ package com.liminal.easy_augment_example;
 // Import statements
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,23 +11,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.liminal.easy_augment.ImageStore;
 import com.liminal.easy_augment.ScanActivityHelper;
 
-import java.util.ArrayList;
-
 // Main activity
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        Log.d("EA V-0.4", "App start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // load the reference images that needs scanning
-        ArrayList<Bitmap> refImageList = new ArrayList<>();
-        refImageList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.ferrari_logo));
-        refImageList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.lamborghini_logo));
-        ImageStore.storeRefImage(this, refImageList);
+        // image Store class needs context of Main Activity
+        ScanActivityHelper.setContext(this);
+
+//        // load the reference images that needs scanning
+//        ArrayList<Bitmap> refImageList = new ArrayList<>();
+//        refImageList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.ferrari_logo));
+//        refImageList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.lamborghini_logo));
+//
+//        ImageStore.storeRefImage(refImageList);
+
+        // load the image from given URL
+        ImageStore.storeImageFromURL("https://liminal.in/images/test.jpg");
 
 //        // load the reference image that needs scanning
 //        Bitmap refBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.modi_logo);
@@ -38,12 +39,13 @@ public class MainActivity extends AppCompatActivity {
 
         Button button = findViewById(R.id.button);
         button.setOnClickListener(view -> {
-            Intent scan = ScanActivityHelper.getWebIntent(this, "https://www.oculus.com/");
-//            Intent scan = ScanActivityHelper.getActivityIntent(this, "RedirectActivity");
-//            Intent scan = ScanActivityHelper.getReturnIntent(this);
-//            Intent scan = ScanActivityHelper.getVideoIntent(this, "https://www.youtube.com/watch?v=hAsZCTL__lo");
+            Intent scan = ScanActivityHelper.getWebIntent("https://www.oculus.com/");
+//            Intent scan = ScanActivityHelper.getActivityIntent("RedirectActivity");
+//            Intent scan = ScanActivityHelper.getReturnIntent();
+//            Intent scan = ScanActivityHelper.getVideoIntent("https://www.youtube.com/watch?v=hAsZCTL__lo");
 
             startActivity(scan);
         });
+
     }
 }

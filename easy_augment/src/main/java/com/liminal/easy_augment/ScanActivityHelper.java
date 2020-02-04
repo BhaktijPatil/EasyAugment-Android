@@ -5,51 +5,57 @@ import android.content.Intent;
 
 public class ScanActivityHelper {
 
+    static Context context;
+
+    static public void setContext(Context appContext) {
+        context = appContext;
+    }
+
     // Multiple getIntent functions for creating an intent to open ScanActivity
-    static public Intent getWebIntent(Context context, String website)
+    static public Intent getWebIntent(String website)
     {
         Intent scan = new Intent(context, ScanActivity.class);
         scan.putExtra("REDIRECT", website);
         scan.putExtra("REDIRECT_TO", "website");
-        scan.putExtra("PACKAGE_NAME", getPackageName(context));
+        scan.putExtra("PACKAGE_NAME", getPackageName());
         return scan;
     }
 
-    static public Intent getActivityIntent(Context context, String activity)
+    static public Intent getActivityIntent(String activity)
     {
         Intent scan = new Intent(context, ScanActivity.class);
         scan.putExtra("REDIRECT", activity);
         scan.putExtra("REDIRECT_TO", "activity");
-        scan.putExtra("PACKAGE_NAME", getPackageName(context));
+        scan.putExtra("PACKAGE_NAME", getPackageName());
         return scan;
     }
 
-    static public Intent getVideoIntent(Context context, String video_url)
+    static public Intent getVideoIntent(String video_url)
     {
         Intent scan = new Intent(context, ScanActivity.class);
         scan.putExtra("REDIRECT", video_url);
         scan.putExtra("REDIRECT_TO", "video");
-        scan.putExtra("PACKAGE_NAME", getPackageName(context));
+        scan.putExtra("PACKAGE_NAME", getPackageName());
         return scan;
     }
 
-    static public Intent getReturnIntent(Context context)
+    static public Intent getReturnIntent()
     {
         Intent scan = new Intent(context, ScanActivity.class);
-        scan.putExtra("REDIRT", getPreviousClassName(context));
+        scan.putExtra("REDIRT", getPreviousClassName());
         scan.putExtra("REDIRECT_TO", "activity");
-        scan.putExtra("PACKAGE_NAME", getPackageName(context));
+        scan.putExtra("PACKAGE_NAME", getPackageName());
         return scan;
     }
 
     // Get the name of the activity calling the Helper
-    static  private String getPreviousClassName(Context context)
+    private static String getPreviousClassName()
     {
         return context.getClass().getSimpleName();
     }
 
     // Get the name of the application package
-    static private String getPackageName(Context context)
+    private static String getPackageName()
     {
         return context.getApplicationContext().getPackageName();
     }

@@ -1,13 +1,9 @@
 package com.liminal.easy_augment;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class RedirectWeb extends AppCompatActivity {
 

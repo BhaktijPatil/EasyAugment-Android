@@ -35,7 +35,9 @@ public class ScanActivity extends AppCompatActivity {
         redirect = getIntent().getStringExtra("REDIRECT");
         packageName = getIntent().getStringExtra("PACKAGE_NAME");
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
-        arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
+        if (arFragment != null) {
+            arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
+        }
     }
 
     @Override
@@ -86,5 +88,13 @@ public class ScanActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    // On stop method is called when the activity is paused (Image is detected)
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Destroy the scanner activity once an image is found
+        finish();
     }
 }
