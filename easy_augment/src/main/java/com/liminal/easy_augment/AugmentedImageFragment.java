@@ -68,18 +68,23 @@ public class AugmentedImageFragment extends ArFragment {
     private boolean setupAugmentedImageDatabase(Config config, Session session) {
         // Create Augmented image database and add the reference image to it
         AugmentedImageDatabase augmentedImageDatabase = new AugmentedImageDatabase(session);
+
         // Load the reference images into the database
         int imageCount = 0;
-        for(Bitmap augmentedImageBitmap : ImageStore.loadRefImage())
+        Log.d(TAG, "Setting up Augmented Image Database");
+        for (Bitmap augmentedImageBitmap : ImageManager.loadMarkerImages())
         {
+            Log.d("AIDB", "Image loaded in DB");
             imageCount += 1;
             if (augmentedImageBitmap == null)
                 return false;
 
-            augmentedImageDatabase.addImage("Ref_Img_" + imageCount + ".jpg", augmentedImageBitmap);
+            augmentedImageDatabase.addImage("Marker_Img_" + imageCount + ".jpg", augmentedImageBitmap);
 
         }
         config.setAugmentedImageDatabase(augmentedImageDatabase);
+
+        Log.d(TAG, "Augmented Image Database has been setup");
         return true;
     }
 }

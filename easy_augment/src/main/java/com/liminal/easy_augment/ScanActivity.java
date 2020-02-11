@@ -1,7 +1,7 @@
 package com.liminal.easy_augment;
 
 // Import statements
-import android.content.ComponentName;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,25 +15,15 @@ import com.google.ar.sceneform.ux.ArFragment;
 
 import java.util.Collection;
 
-// Scan Activity
 public class ScanActivity extends AppCompatActivity {
 
     private ArFragment arFragment;
-
-    // These variables are obtained from the application
-    private String redirect;
-    private String packageName;
-    private String redirect_to;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
 
-        // Get intent allows us to retrieve strings from the calling activity
-        redirect_to = getIntent().getStringExtra("REDIRECT_TO");
-        redirect = getIntent().getStringExtra("REDIRECT");
-        packageName = getIntent().getStringExtra("PACKAGE_NAME");
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
         if (arFragment != null) {
             arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
@@ -59,33 +49,36 @@ public class ScanActivity extends AppCompatActivity {
             switch (augmentedImage.getTrackingState()) {
                 case PAUSED:
                     // When an image is in PAUSED state it has been detected.
-                    if(redirect_to.equals("website"))
-                    {
-                        // Open website specified by user
-                        Intent newWebActivity = new Intent(this, RedirectWeb.class);
-                        newWebActivity.putExtra("WEBSITE", redirect);
-                        startActivity(newWebActivity);
-                        Log.d("REDIRECT_TO","Redirecting to Website : " + redirect);
-                    }
-                    else if(redirect_to.equals("activity"))
-                    {
-                        // Open activity specified by user
-                        ComponentName cn = new ComponentName(this,packageName + "." + redirect);
-                        Intent newActivity = new Intent().setComponent(cn);
-                        startActivity(newActivity);
-                        Log.d("REDIRECT_TO","Redirecting to Activity : " + redirect);
-                    }
-                    else
-                    {
-                        // Open website specified by user
-                        Intent newVideoActivity = new Intent(this, RedirectWeb.class);
-                        newVideoActivity.putExtra("VIDEO_URL", redirect);
-                        startActivity(newVideoActivity);
-                        Log.d("REDIRECT_TO","Redirecting to Video : " + redirect);
+                    switch (DBManager.getFromImageDetails("redirectTo").get(augmentedImage.getIndex())) {
+
+                        case "0": // Open Video
+                            String videoURL = DBManager.getFromImageDetails("redirectURL").get(augmentedImage.getIndex());
+                            Intent newVideoActivity = new Intent(this, RedirectWeb.class);
+                            newVideoActivity.putExtra("VIDEO_URL", videoURL);
+                            startActivity(newVideoActivity);
+                            Log.d("REDIRECT_TO", "Redirecting to Video : " + videoURL);
+                            break;
+
+                        case "1": // Open website
+                            String website = DBManager.getFromImageDetails("redirectURL").get(augmentedImage.getIndex());
+                            Intent newWebActivity = new Intent(this, RedirectWeb.class);
+                            newWebActivity.putExtra("WEBSITE", website);
+                            startActivity(newWebActivity);
+                            Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Redirecting to Website : " + website);
+                            break;
+
+                        case "2": // Open activity
+//                            ComponentName cn = new ComponentName(this,packageName + "." + redirect);
+//                            Intent newActivity = new Intent().setComponent(cn);
+//                            startActivity(newActivity);
+//                            Log.d("REDIRECT_TO","Redirecting to Activity : " + redirect);
+                            break;
+
                     }
                 case TRACKING:
                 case STOPPED:
                     break;
+
             }
         }
     }
