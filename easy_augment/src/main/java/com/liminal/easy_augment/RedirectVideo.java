@@ -1,5 +1,6 @@
 package com.liminal.easy_augment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.VideoView;
 
@@ -15,9 +16,9 @@ public class RedirectVideo extends AppCompatActivity {
         // Get video URL from ScanActivity
         String video_link = getIntent().getStringExtra("VIDEO_URL");
 
-
-        VideoView videoView= findViewById(R.id.videoView);
-        videoView.setVideoPath(video_link);
+        Uri videoURL = Uri.parse(video_link);
+        VideoView videoView = findViewById(R.id.videoView);
+        videoView.setVideoURI(videoURL);
         videoView.start();
     }
 }

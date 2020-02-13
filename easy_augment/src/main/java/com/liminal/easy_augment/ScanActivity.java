@@ -49,29 +49,30 @@ public class ScanActivity extends AppCompatActivity {
             switch (augmentedImage.getTrackingState()) {
                 case PAUSED:
                     // When an image is in PAUSED state it has been detected.
-                    switch (DBManager.getFromImageDetails("redirectTo").get(augmentedImage.getIndex())) {
+                    switch (DBManager.getDownloadedFromImageDetails("redirectTo").get(augmentedImage.getIndex())) {
 
-                        case "0": // Open Video
-                            String videoURL = DBManager.getFromImageDetails("redirectURL").get(augmentedImage.getIndex());
-                            Intent newVideoActivity = new Intent(this, RedirectWeb.class);
-                            newVideoActivity.putExtra("VIDEO_URL", videoURL);
-                            startActivity(newVideoActivity);
-                            Log.d("REDIRECT_TO", "Redirecting to Video : " + videoURL);
+                        case "0": // Open Activity
+//                            ComponentName cn = new ComponentName(this,packageName + "." + redirect);
+//                            Intent newActivity = new Intent().setComponent(cn);
+//                            startActivity(newActivity);
+//                            Log.d("REDIRECT_TO","Redirecting to Activity : " + redirect);
+
                             break;
 
                         case "1": // Open website
-                            String website = DBManager.getFromImageDetails("redirectURL").get(augmentedImage.getIndex());
+                            String website = DBManager.getDownloadedFromImageDetails("redirectURL").get(augmentedImage.getIndex());
                             Intent newWebActivity = new Intent(this, RedirectWeb.class);
                             newWebActivity.putExtra("WEBSITE", website);
                             startActivity(newWebActivity);
                             Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Redirecting to Website : " + website);
                             break;
 
-                        case "2": // Open activity
-//                            ComponentName cn = new ComponentName(this,packageName + "." + redirect);
-//                            Intent newActivity = new Intent().setComponent(cn);
-//                            startActivity(newActivity);
-//                            Log.d("REDIRECT_TO","Redirecting to Activity : " + redirect);
+                        case "2": // Open Video
+                            String videoURL = DBManager.getDownloadedFromImageDetails("redirectURL").get(augmentedImage.getIndex());
+                            Intent newVideoActivity = new Intent(this, RedirectWeb.class);
+                            newVideoActivity.putExtra("VIDEO_URL", videoURL);
+                            startActivity(newVideoActivity);
+                            Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Redirecting to Video : " + videoURL);
                             break;
 
                     }

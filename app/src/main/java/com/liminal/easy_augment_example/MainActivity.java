@@ -1,7 +1,6 @@
 package com.liminal.easy_augment_example;
 
 // Import statements
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;

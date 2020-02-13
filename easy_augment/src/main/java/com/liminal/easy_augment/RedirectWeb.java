@@ -2,6 +2,7 @@ package com.liminal.easy_augment;
 
 import android.os.Bundle;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +19,7 @@ public class RedirectWeb extends AppCompatActivity {
         // Open required Website
         WebView webView = findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient());
         webView.loadUrl(website);
     }
 }
