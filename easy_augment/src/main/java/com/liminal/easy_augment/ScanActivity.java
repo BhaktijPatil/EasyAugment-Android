@@ -69,7 +69,7 @@ public class ScanActivity extends AppCompatActivity {
 
                         case "2": // Open Video
                             String videoURL = DBManager.getDownloadedFromImageDetails("redirectURL").get(augmentedImage.getIndex());
-                            Intent newVideoActivity = new Intent(this, RedirectWeb.class);
+                            Intent newVideoActivity = new Intent(this, RedirectVideo.class);
                             newVideoActivity.putExtra("VIDEO_URL", videoURL);
                             startActivity(newVideoActivity);
                             Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Redirecting to Video : " + videoURL);
