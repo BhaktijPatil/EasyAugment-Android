@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
         String devKey = "101";
 
-        EasyAugmentHelper easyAugmentHelper = new EasyAugmentHelper(devKey, this);
+        EasyAugmentHelper easyAugmentHelper = new EasyAugmentHelper(devKey, this, RedirectActivity.class.getName());
         easyAugmentHelper.loadMarkerImages();
 
         Button button = findViewById(R.id.button);

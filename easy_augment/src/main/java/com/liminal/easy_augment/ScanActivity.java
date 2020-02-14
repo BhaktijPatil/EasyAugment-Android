@@ -2,6 +2,7 @@ package com.liminal.easy_augment;
 
 // Import statements
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,11 +53,15 @@ public class ScanActivity extends AppCompatActivity {
                     switch (DBManager.getDownloadedFromImageDetails("redirectTo").get(augmentedImage.getIndex())) {
 
                         case "0": // Open Activity
-//                            ComponentName cn = new ComponentName(this, packageName + "." + redirect);
-//                            Intent newActivity = new Intent().setComponent(cn);
-//                            startActivity(newActivity);
-//                            Log.d("REDIRECT_TO","Redirecting to Activity : " + redirect);
-
+                            Intent intent = getIntent();
+                            String redirectActivityName = intent.getStringExtra("REDIRECT_ACTIVITY_NAME");
+                            if (redirectActivityName != null) {
+                                ComponentName cn = new ComponentName(this, redirectActivityName);
+                                Intent newActivity = new Intent().setComponent(cn);
+                                startActivity(newActivity);
+                                Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Redirecting to Activity : " + redirectActivityName);
+                            } else
+                                Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Redirect Activity name is not specified");
                             break;
 
                         case "1": // Open website
