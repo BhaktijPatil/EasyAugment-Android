@@ -9,46 +9,50 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-class JSONFromURL extends AsyncTask<String, Void, String> {
+class Verifier extends AsyncTask<String, Void, String> {
 
-    // Post execute returns text obtained from the script
+    private String link;
+
+    Verifier(String devKey) {
+        link = "https://liminal.in/verifyUser.php?uid=" + devKey;
+    }
+
+    // Post execute returns if the user is verified
     @Override
     protected void onPostExecute(String text) {
         super.onPostExecute(text);
     }
 
-    //Function to read JSON from PHP link
+    //Function to verify developer
     @Override
     protected String doInBackground(String... params) {
         try {
-            String link = params[0];
             java.net.URL url = new URL(link);
 
             // Set up connection via GET method
-            Log.d("PHP_connect", "Trying to establish PHP connection");
+            Log.d("PHP_connect", "Trying to establish PHP connection for Developer verification");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
 
             // Check if connection is established
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                Log.d("PHP_connect", "Connection established");
+                Log.d("PHP_connect", "Connection established for Developer verification");
 
                 // Read data from the PHP connection
                 InputStream inputStream = connection.getInputStream();
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String str = bufferedReader.readLine();
 
-                String str;
-                StringBuilder sb = new StringBuilder();
+                // Log to let the developer know if incorrect key is entered
+                if (str.equals("TRUE"))
+                    Log.d("DEV_VERIFY", "Developer is verified");
+                else
+                    Log.d("DEV_VERIFY", "Illegal Developer key");
 
-                //reading until we don't find null
-                while ((str = bufferedReader.readLine()) != null) {
-                    Log.d("PHP_connect", "Read line : " + str);
-                    sb.append(str).append("\n");
-                }
-                return sb.toString().trim();
+                return str;
             } else {
-                Log.d("PHP_connect", "Failed to establish PHP connection");
+                Log.d("PHP_connect", "Failed to establish PHP connection for Developer verification");
             }
         } catch (Exception e) {
             e.printStackTrace();

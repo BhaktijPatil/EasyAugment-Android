@@ -52,7 +52,7 @@ public class ScanActivity extends AppCompatActivity {
                     switch (DBManager.getDownloadedFromImageDetails("redirectTo").get(augmentedImage.getIndex())) {
 
                         case "0": // Open Activity
-//                            ComponentName cn = new ComponentName(this,packageName + "." + redirect);
+//                            ComponentName cn = new ComponentName(this, packageName + "." + redirect);
 //                            Intent newActivity = new Intent().setComponent(cn);
 //                            startActivity(newActivity);
 //                            Log.d("REDIRECT_TO","Redirecting to Activity : " + redirect);

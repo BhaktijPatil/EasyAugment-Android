@@ -18,6 +18,8 @@ import com.google.ar.core.Config;
 import com.google.ar.core.Session;
 import com.google.ar.sceneform.ux.ArFragment;
 
+import java.util.ArrayList;
+
 
 // Extend the ArFragment to customize the ARCore session configuration to include Augmented Images.
 public class AugmentedImageFragment extends ArFragment {
@@ -72,16 +74,19 @@ public class AugmentedImageFragment extends ArFragment {
         // Load the reference images into the database
         int imageCount = 0;
         Log.d(TAG, "Setting up Augmented Image Database");
-        for (Bitmap augmentedImageBitmap : ImageManager.loadMarkerImages())
-        {
-            Log.d("AIDB", "Image loaded in DB");
-            imageCount += 1;
-            if (augmentedImageBitmap == null)
-                return false;
 
-            augmentedImageDatabase.addImage("Marker_Img_" + imageCount + ".jpg", augmentedImageBitmap);
+        ArrayList<Bitmap> markerImages = ImageManager.loadMarkerImages();
 
-        }
+        if (markerImages != null)
+            for (Bitmap augmentedImageBitmap : markerImages) {
+                Log.d("AIDB", "Image loaded in DB");
+                imageCount += 1;
+                if (augmentedImageBitmap == null)
+                    return false;
+
+                augmentedImageDatabase.addImage("Marker_Img_" + imageCount + ".jpg", augmentedImageBitmap);
+
+            }
         config.setAugmentedImageDatabase(augmentedImageDatabase);
 
         Log.d(TAG, "Augmented Image Database has been setup");

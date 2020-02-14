@@ -4,26 +4,27 @@
 
     <uses-feature
         android:glEsVersion="0x00030000"
-        android:required="true" /> <!-- Always needed for AR. -->
+        android:required="true" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-feature
         android:name="android.hardware.camera.ar"
         android:required="true" />
 
     <application>
-        <activity android:name=".RedirectVideo"/>
+
+        <activity android:name=".RedirectVideo" />
         <activity android:name=".RedirectWeb" />
         <activity android:name=".ScanActivity" />
-        <!--
-         Indicates that this app requires Google Play Services for AR ("AR Required") and causes
-                 the Google Play Store to download and intall Google Play Services for AR along with
-                 the app. For an "AR Optional" app, specify "optional" instead of "required".
-        -->
+
+        <service
+            android:name="MarkerDownloadService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <meta-data
             android:name="com.google.ar.core"
             android:value="optional" />
