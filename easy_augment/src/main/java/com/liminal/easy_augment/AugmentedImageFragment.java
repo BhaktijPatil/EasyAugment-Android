@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import com.google.ar.core.AugmentedImageDatabase;
 import com.google.ar.core.Config;
 import com.google.ar.core.Session;
+import com.google.ar.core.exceptions.ImageInsufficientQualityException;
 import com.google.ar.sceneform.ux.ArFragment;
 
 import java.util.ArrayList;
@@ -79,13 +80,20 @@ public class AugmentedImageFragment extends ArFragment {
 
         if (markerImages != null)
             for (Bitmap augmentedImageBitmap : markerImages) {
-                Log.d("AIDB", "Image loaded in DB");
+                Log.d(TAG, "Image loaded in DB");
                 imageCount += 1;
                 if (augmentedImageBitmap == null)
                     return false;
 
-                augmentedImageDatabase.addImage("Marker_Img_" + imageCount + ".jpg", augmentedImageBitmap);
+                try
+                {
+                    augmentedImageDatabase.addImage("Marker_Img_" + imageCount + ".jpg", augmentedImageBitmap);
 
+                }
+                catch (ImageInsufficientQualityException e)
+                {
+                    Log.d(TAG,"Image Marker quality poor");
+                }
             }
         config.setAugmentedImageDatabase(augmentedImageDatabase);
 
