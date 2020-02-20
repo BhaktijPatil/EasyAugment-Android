@@ -84,7 +84,6 @@ class DBManager {
 
             // Add new image ids to the list
             new_img_id_list.add(imageID);
-
             // Insert values into Image details database
             insertImageDetails(imageID, redirectTo, redirectURL, imageHash, "FALSE");
         }

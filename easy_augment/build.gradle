@@ -46,3 +46,9 @@ dependencies {
 }
 
 apply plugin: 'com.google.ar.sceneform.plugin'
+
+
+sceneform.asset('ARmodels/Astronaut.obj',
+        'default',
+        'ARmodels/Astronaut.sfa',
+        'src/main/assets/Astronaut')
