@@ -39,6 +39,7 @@ class ImageManager {
         // List to store all marker images stored in storage
         ArrayList<Bitmap> markerImages = new ArrayList<>();
 
+        Log.d("IMG_MANAGER","shafihsaijf");
         for (String imageName : DBManager.getDownloadedFromImageDetails("imageHash")) {
             try {
                 File file = new File(imageDirectory, imageName);
@@ -76,30 +77,8 @@ class ImageManager {
                 });
     }
 
-//    // (Picasso) Function to load Image from an url and store it in internal storage
-//    void storeImageFromURL(String imageName, String URL)
-//    {
-//        Log.d("IMG_MANAGER_URL_LOAD", "Finding image at URL : " + URL);
-//
-//        Picasso.get().load(URL).into(new Target() {
-//            @Override
-//            public void onBitmapLoaded(Bitmap image, Picasso.LoadedFrom from) {
-//                new Thread(() -> {
-//                    storeImage(image, imageName);
-//                    Log.d("IMG_MANAGER_URL_LOAD", "Image " + imageName + " loaded from URL");
-//                }).start();
-//            }
-//            @Override
-//            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-//                Log.d("IMG_MANAGER_URL_LOAD", "Failed to load image from URL");
-//            }
-//            @Override
-//            public void onPrepareLoad(Drawable placeHolderDrawable) {}
-//        });
-//    }
-
     // Function to store a Bitmap in internal storage
-    void storeImage(Bitmap image, String imageName) {
+    private void storeImage(Bitmap image, String imageName) {
         // Create image directory
         File img_path = new File(imageDirectory, imageName);
         FileOutputStream fos = null;

@@ -27,11 +27,12 @@ public class MarkerDownloadService extends JobIntentService {
         Log.d("MARKER_DOWNLOAD_SERVICE", "onHandleWork initiated");
         devKey = intent.getStringExtra("DEVELOPER_KEY");
 
+        dbManager = new DBManager(this);
+        imageManager = new ImageManager(this);
         Verifier verifier = new Verifier(devKey);
+
         try {
             if (verifier.execute().get().equals("TRUE")) {
-                dbManager = new DBManager(this);
-                imageManager = new ImageManager(this);
                 try {
                     dbManager.updateImageDetails(devKey);
                     deleteImages(dbManager.getRedundantImageNames());
