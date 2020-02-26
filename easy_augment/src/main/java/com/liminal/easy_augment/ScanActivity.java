@@ -2,6 +2,7 @@ package com.liminal.easy_augment;
 
 // Import statements
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,13 +31,9 @@ public class ScanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
         scannerView = findViewById(R.id.image_view_fit_to_scan);
-
-        if (arFragment != null) {
-            arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
-        }
+        arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
     }
 
     @Override

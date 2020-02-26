@@ -28,6 +28,9 @@
         <meta-data
             android:name="com.google.ar.core"
             android:value="optional" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package com.liminal.easy_augment;
 
 // Import statements
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.ar.core.AugmentedImageDatabase;
 import com.google.ar.core.Config;
@@ -72,24 +75,21 @@ public class AugmentedImageFragment extends ArFragment {
         Log.d(TAG, "Setting up Augmented Image Database");
 
         ArrayList<Bitmap> markerImages = ImageManager.loadMarkerImages();
-
-        if (markerImages != null)
+        if (markerImages != null) {
             for (Bitmap augmentedImageBitmap : markerImages) {
                 Log.d(TAG, "Image loaded in DB");
                 imageCount += 1;
-                if (augmentedImageBitmap == null)
-                    return false;
-
-                try
-                {
+                try {
                     augmentedImageDatabase.addImage("Marker_Img_" + imageCount + ".jpg", augmentedImageBitmap);
-
                 }
-                catch (ImageInsufficientQualityException e)
-                {
-                    Log.d(TAG,"Image Marker quality poor");
+                catch (ImageInsufficientQualityException e) {
+                    Log.d(TAG, "Image Marker quality poor");
                 }
             }
+        }
+        else
+            Log.d(TAG,"No markers found");
+
         config.setAugmentedImageDatabase(augmentedImageDatabase);
 
         Log.d(TAG, "Augmented Image Database has been setup");
