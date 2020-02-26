@@ -7,8 +7,8 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
-        classpath 'com.google.ar.sceneform:plugin:1.14.0'
+        classpath 'com.android.tools.build:gradle:3.6.0'
+        classpath 'com.google.ar.sceneform:plugin:1.15.0'
     }
 }
 

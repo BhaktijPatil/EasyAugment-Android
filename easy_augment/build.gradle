@@ -41,14 +41,14 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     // Glide for getting images from URL
     implementation 'com.github.bumptech.glide:glide:4.11.0'
-    // add exo player dependency here
-    implementation 'com.google.android.exoplayer:exoplayer:2.10.5'
+    // Exo player for playing videos from URL
+    implementation 'com.google.android.exoplayer:exoplayer:2.11.2'
 }
 
 apply plugin: 'com.google.ar.sceneform.plugin'
 
 
-sceneform.asset('ARmodels/Astronaut.obj',
-        'default',
-        'ARmodels/Astronaut.sfa',
-        'src/main/assets/Astronaut')
+//sceneform.asset('ARmodels/Astronaut.obj',
+//        'default',
+//        'ARmodels/Astronaut.sfa',
+//        'src/main/assets/Astronaut')
