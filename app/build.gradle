@@ -34,29 +34,3 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(path: ':easy_augment')
 }
-
-
-sceneform.asset('3Dmodels/model1/model.obj',
-        'default',
-        '3Dmodels/model1/model.sfa',
-        'src/main/assets/model')
-
-sceneform.asset('3Dmodels/model4/model4.obj',
-        'default',
-        '3Dmodels/model4/model4.sfa',
-        'src/main/assets/model4')
-
-sceneform.asset('3Dmodels/Astronaut/Astronaut.obj',
-        'default',
-        '3Dmodels/Astronaut/Astronaut.sfa',
-        'src/main/assets/Astronaut')
-
-sceneform.asset('3Dmodels/model5/model5.obj',
-        'default',
-        '3Dmodels/model5/model5.sfa',
-        'src/main/assets/model5')
-
-sceneform.asset('3Dmodels/model6/model6.obj',
-        'default',
-        '3Dmodels/model6/model6.sfa',
-        'src/main/assets/model6')

@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class AugmentedImageFragment extends ArFragment {
 
     // Tag for creating logs
-    private static final String TAG = "AugmentedImageFragment";
+    private static final String TAG = "AUGMENTED_IMAGE_FRAGMENT";
 
     // Do a runtime check for the OpenGL level available at runtime to avoid Sceneform crashing the application.
     private static final double MIN_OPENGL_VERSION = 3.0;
@@ -35,17 +35,12 @@ public class AugmentedImageFragment extends ArFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
-        // Check for Sceneform being supported on this device.  This check will be integrated into Sceneform eventually.
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        // Sceneform support check
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
             Log.e(TAG, "Sceneform requires Android N or later");
-        }
-
-        // Check for openGL version
-        String openGlVersionString = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getDeviceConfigurationInfo().getGlEsVersion();
-        if (Double.parseDouble(openGlVersionString) < MIN_OPENGL_VERSION) {
+        // OpenGL version check
+        if (Double.parseDouble(((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getDeviceConfigurationInfo().getGlEsVersion()) < MIN_OPENGL_VERSION)
             Log.e(TAG, "Sceneform requires OpenGL ES 3.0 or later");
-        }
     }
 
     @Override
