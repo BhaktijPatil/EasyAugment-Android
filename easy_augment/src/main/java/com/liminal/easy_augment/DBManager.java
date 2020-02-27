@@ -64,7 +64,7 @@ class DBManager {
     // Function to update the image details table from the remote database
     void updateImageDetails(String devKey) throws JSONException {
         // Create table if it doesn't exist
-        imgDB.execSQL("CREATE TABLE IF NOT EXISTS ImageDetails(imageID INTEGER PRIMARY KEY, redirectTo INTEGER, redirectURL VARCHAR, imageHash VARCHAR, isDownloaded VARCHAR);");
+        imgDB.execSQL("CREATE TABLE IF NOT EXISTS ImageDetails(imageID INTEGER PRIMARY KEY, imageName VARCHAR, redirectTo INTEGER, redirectURL VARCHAR, imageHash VARCHAR, isDownloaded VARCHAR);");
 
         ArrayList<Integer> old_img_id_list = getImageIdList();
         ArrayList<Integer> old_img_id_list_copy = getImageIdList();
@@ -72,7 +72,7 @@ class DBManager {
 
         // Get JSON array from PHP script
         JSONArray arrJSON = getJSONarr(devKey);
-
+        assert arrJSON != null;
         for (int i = 0; i < arrJSON.length(); i++) {
             JSONObject obj = arrJSON.getJSONObject(i);
 
@@ -81,11 +81,12 @@ class DBManager {
             int redirectTo = obj.getInt("RedirectTo");
             String redirectURL = obj.getString("RedirectURL");
             String imageHash = obj.getString("ImageHash");
+            String imageName = obj.getString("ImageName");
 
             // Add new image ids to the list
             new_img_id_list.add(imageID);
             // Insert values into Image details database
-            insertImageDetails(imageID, redirectTo, redirectURL, imageHash, "FALSE");
+            insertImageDetails(imageID, imageName, redirectTo, redirectURL, imageHash, "FALSE");
         }
 
         // Create lists that store image ids that need to be deleted or updated
@@ -180,12 +181,13 @@ class DBManager {
         // Print each row in the imageDetails table
         for (int i = 0; i < ptr.getCount(); i++) {
             String imageID = ptr.getString(0);
-            String redirectTo = ptr.getString(1);
-            String redirectURL = ptr.getString(2);
-            String imageHash = ptr.getString(3);
-            String isDownloaded = ptr.getString(4);
+            String imageName = ptr.getString(1);
+            String redirectTo = ptr.getString(2);
+            String redirectURL = ptr.getString( 3);
+            String imageHash = ptr.getString(4);
+            String isDownloaded = ptr.getString(5);
 
-            Log.d("DB_MANAGER_VIEW", "Row " + i + " : " + imageID + " " + redirectTo + " " + redirectURL + " " + imageHash + " " + isDownloaded);
+            Log.d("DB_MANAGER_VIEW", "Row " + i + " : " + imageID + " " + redirectTo + " " + redirectURL + " " + imageName + " " + isDownloaded);
 
             // Go to next row
             ptr.moveToNext();
@@ -195,10 +197,11 @@ class DBManager {
     }
 
     // Function to Insert into ImageDetails
-    private void insertImageDetails(int imageID, int redirectTo, String redirectURL, String imageHash, String isDownloaded) {
+    private void insertImageDetails(int imageID, String imageName, int redirectTo, String redirectURL, String imageHash, String isDownloaded) {
         ContentValues values = new ContentValues();
 
         values.put("imageID", imageID);
+        values.put("imageName", imageName);
         values.put("redirectTo", redirectTo);
         values.put("redirectURL", redirectURL);
         values.put("imageHash", imageHash);

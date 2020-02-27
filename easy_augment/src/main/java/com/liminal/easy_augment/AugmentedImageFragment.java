@@ -52,6 +52,7 @@ public class AugmentedImageFragment extends ArFragment {
         // Turn off the plane discovery since we're only looking for images
         getPlaneDiscoveryController().hide();
         getPlaneDiscoveryController().setInstructionView(null);
+        getArSceneView().setLightEstimationEnabled(false);
         getArSceneView().getPlaneRenderer().setEnabled(false);
         return view;
     }
@@ -60,6 +61,7 @@ public class AugmentedImageFragment extends ArFragment {
     protected Config getSessionConfiguration(Session session) {
         Config config = super.getSessionConfiguration(session);
         config.setFocusMode(Config.FocusMode.AUTO);
+        config.setLightEstimationMode(Config.LightEstimationMode.DISABLED);
         if (!setupAugmentedImageDatabase(config, session)) {
             Log.e(TAG, "Could not setup augmented image database");
         }

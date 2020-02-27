@@ -39,7 +39,6 @@ class ImageManager {
         // List to store all marker images stored in storage
         ArrayList<Bitmap> markerImages = new ArrayList<>();
 
-        Log.d("IMG_MANAGER","shafihsaijf");
         for (String imageName : DBManager.getDownloadedFromImageDetails("imageHash")) {
             try {
                 File file = new File(imageDirectory, imageName);

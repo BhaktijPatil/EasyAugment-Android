@@ -41,7 +41,6 @@ class JSONFromURL extends AsyncTask<String, Void, String> {
                 String str;
                 StringBuilder sb = new StringBuilder();
 
-                //reading until we don't find null
                 while ((str = bufferedReader.readLine()) != null) {
                     Log.d("PHP_connect", "Read line : " + str);
                     sb.append(str).append("\n");

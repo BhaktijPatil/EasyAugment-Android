@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -23,6 +24,7 @@ import com.google.ar.core.Anchor;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.core.Frame;
 import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.FrameTime;
 import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.math.Vector3;
@@ -94,6 +96,7 @@ public class ScanActivity extends AppCompatActivity {
                             if (redirectActivityName != null) {
                                 ComponentName cn = new ComponentName(this, redirectActivityName);
                                 Intent newActivity = new Intent().setComponent(cn);
+                                newActivity.putExtra("IMAGE_NAME", DBManager.getDownloadedFromImageDetails("imageName").get(augmentedImage.getIndex()));
                                 startActivity(newActivity);
                                 Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Redirecting to Activity : " + redirectActivityName);
                             } else
@@ -172,7 +175,7 @@ public class ScanActivity extends AppCompatActivity {
             texture = new ExternalTexture();
             Uri uri = Uri.parse(url);
             MediaSource mediaSource = buildMediaSource(uri);
-            player = ExoPlayerFactory.newSimpleInstance(this);
+            player = new SimpleExoPlayer.Builder(this).build();
             player.setVideoSurface(texture.getSurface());
             player.prepare(mediaSource, false, false);
             player.setRepeatMode(Player.REPEAT_MODE_ALL);
@@ -188,19 +191,18 @@ public class ScanActivity extends AppCompatActivity {
                                 texture);
 
                         renderable = modelRenderable;
+                        renderable.setShadowCaster(false);
+                        renderable.setShadowReceiver(false);
                     });
         }
     }
 
     private MediaSource buildMediaSource(Uri uri) {
-        DataSource.Factory dataSourceFactory =
-                new DefaultDataSourceFactory(this, "exoplayer-codelab");
-        return new ProgressiveMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(uri);
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, "EasyAugment");
+        return new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
     }
 
     private void playVideo(Anchor anchor, float extentX, float extentZ) {
-
         player.setPlayWhenReady(true);
 
         AnchorNode anchorNode = new AnchorNode(anchor);
@@ -211,8 +213,6 @@ public class ScanActivity extends AppCompatActivity {
         });
 
         anchorNode.setWorldScale(new Vector3(extentX, 1f, extentZ));
-
         scene.addChild(anchorNode);
-
     }
 }
