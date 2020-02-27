@@ -42,10 +42,12 @@ class ImageManager {
         for (String imageName : DBManager.getDownloadedFromImageDetails("imageHash")) {
             try {
                 File file = new File(imageDirectory, imageName);
-                Bitmap refBitmap = BitmapFactory.decodeStream(new FileInputStream(file));
+                FileInputStream fileInputStream = new FileInputStream(file);
+                Bitmap refBitmap = BitmapFactory.decodeStream(fileInputStream);
+                fileInputStream.close();
                 Log.d("IMG_MANAGER_LOAD_IMG", "Reference Image file " + imageName + " found");
                 markerImages.add(refBitmap);
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 Log.d("IMG_MANAGER_LOAD_IMG", "Reference Image file " + imageName + " not found");
                 return null;
@@ -86,7 +88,8 @@ class ImageManager {
             fos = new FileOutputStream(img_path);
             // Use the compress method on the BitMap object to write image to the OutputStream
             image.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
