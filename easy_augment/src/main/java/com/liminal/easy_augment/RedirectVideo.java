@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
-import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -40,7 +39,7 @@ public class RedirectVideo extends AppCompatActivity implements Player.EventList
     }
 
     private void initializePlayer() {
-        player = ExoPlayerFactory.newSimpleInstance(this);
+        player = new SimpleExoPlayer.Builder(this).build();
         playerView.setPlayer(player);
         Uri uri = Uri.parse(vid_url);
         MediaSource mediaSource = buildMediaSource(uri);

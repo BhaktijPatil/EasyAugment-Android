@@ -4,7 +4,6 @@ package com.liminal.easy_augment;
 
 import android.content.ComponentName;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,24 +11,10 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.ar.core.Anchor;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.core.Frame;
-import com.google.ar.sceneform.AnchorNode;
-import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.FrameTime;
 import com.google.ar.sceneform.Scene;
-import com.google.ar.sceneform.math.Vector3;
-import com.google.ar.sceneform.rendering.ExternalTexture;
-import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 
 import java.util.Collection;
@@ -41,9 +26,6 @@ public class ScanActivity extends AppCompatActivity {
     private ArFragment arFragment;
     private ImageView scannerView;
 
-    private ExternalTexture texture;
-    private ModelRenderable renderable;
-    private SimpleExoPlayer player;
     private Scene scene;
 
     private boolean isTracking = false;
@@ -125,7 +107,8 @@ public class ScanActivity extends AppCompatActivity {
 
                         case "4": // Augment Video
                             Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting video : " + DBManager.getDownloadedFromImageDetails("redirectURL").get(augmentedImage.getIndex()));
-                            videoAugment(DBManager.getDownloadedFromImageDetails("redirectURL").get(augmentedImage.getIndex()));
+                            AugmentVideo.videoAugment(DBManager.getDownloadedFromImageDetails("redirectURL").get(augmentedImage.getIndex()),this);
+                            augmentVideo = true;
                             break;
                     }
                     break;
@@ -146,8 +129,8 @@ public class ScanActivity extends AppCompatActivity {
                         else
                             if(!isTracking)
                             {
-                                playVideo(augmentedImage.createAnchor(augmentedImage.getCenterPose()), augmentedImage.getExtentX(),
-                                        augmentedImage.getExtentZ());
+                                AugmentVideo.playVideo(augmentedImage.createAnchor(augmentedImage.getCenterPose()), augmentedImage.getExtentX(),
+                                        augmentedImage.getExtentZ(), scene);
                                 isTracking = true;
                             }
                     }
@@ -169,50 +152,4 @@ public class ScanActivity extends AppCompatActivity {
         finish();
     }
 
-    protected void videoAugment(String url){
-        if(player == null)
-        {
-            texture = new ExternalTexture();
-            Uri uri = Uri.parse(url);
-            MediaSource mediaSource = buildMediaSource(uri);
-            player = new SimpleExoPlayer.Builder(this).build();
-            player.setVideoSurface(texture.getSurface());
-            player.prepare(mediaSource, false, false);
-            player.setRepeatMode(Player.REPEAT_MODE_ALL);
-            player.setPlayWhenReady(false);
-            augmentVideo = true;
-
-            ModelRenderable
-                    .builder()
-                    .setSource(this, R.raw.augmented_video_model)
-                    .build()
-                    .thenAccept(modelRenderable -> {
-                        modelRenderable.getMaterial().setExternalTexture("videoTexture",
-                                texture);
-
-                        renderable = modelRenderable;
-                        renderable.setShadowCaster(false);
-                        renderable.setShadowReceiver(false);
-                    });
-        }
-    }
-
-    private MediaSource buildMediaSource(Uri uri) {
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, "EasyAugment");
-        return new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
-    }
-
-    private void playVideo(Anchor anchor, float extentX, float extentZ) {
-        player.setPlayWhenReady(true);
-
-        AnchorNode anchorNode = new AnchorNode(anchor);
-
-        texture.getSurfaceTexture().setOnFrameAvailableListener(surfaceTexture -> {
-            anchorNode.setRenderable(renderable);
-            texture.getSurfaceTexture().setOnFrameAvailableListener(null);
-        });
-
-        anchorNode.setWorldScale(new Vector3(extentX, 1f, extentZ));
-        scene.addChild(anchorNode);
-    }
 }

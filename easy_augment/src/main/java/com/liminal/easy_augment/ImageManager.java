@@ -16,7 +16,6 @@ import com.bumptech.glide.request.transition.Transition;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -107,12 +106,6 @@ class ImageManager {
         boolean isDeleted = img_path.delete();
         if (isDeleted)
             Log.d("IMAGE_MANAGER_DELETED", imageName);
-    }
-
-    // Function to get storage location of images
-    private String getStorageLoc() {
-        Log.d("IMAGE_MANAGER_STORAGE_LOC", imageDirectory.getAbsolutePath());
-        return imageDirectory.getAbsolutePath();
     }
 
 }

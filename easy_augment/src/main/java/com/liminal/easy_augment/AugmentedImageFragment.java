@@ -1,7 +1,6 @@
 package com.liminal.easy_augment;
 
 // Import statements
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 import com.google.ar.core.AugmentedImageDatabase;
 import com.google.ar.core.Config;
@@ -54,6 +51,7 @@ public class AugmentedImageFragment extends ArFragment {
         getPlaneDiscoveryController().setInstructionView(null);
         getArSceneView().setLightEstimationEnabled(false);
         getArSceneView().getPlaneRenderer().setEnabled(false);
+        getArSceneView().setLightEstimationEnabled(false);
         return view;
     }
 
