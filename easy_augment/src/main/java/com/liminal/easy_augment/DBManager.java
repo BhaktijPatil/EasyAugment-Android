@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
+import static android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE;
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
 
@@ -206,8 +207,7 @@ class DBManager {
         values.put("redirectURL", redirectURL);
         values.put("imageHash", imageHash);
         values.put("isDownloaded", isDownloaded);
-
-        imgDB.insert("ImageDetails", null, values);
+        imgDB.insertWithOnConflict("ImageDetails", null, values, CONFLICT_IGNORE);
     }
 
     // Function to get JSON array from PHP script
