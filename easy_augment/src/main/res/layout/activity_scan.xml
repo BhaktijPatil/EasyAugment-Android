@@ -44,7 +44,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="32dp"
-            app:srcCompat="@drawable/sceneform_hand_phone" />
+            app:srcCompat="@drawable/exo_icon_repeat_one" />
 
         <TextView
             android:id="@+id/loadingTextView"
