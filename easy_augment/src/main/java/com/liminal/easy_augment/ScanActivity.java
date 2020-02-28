@@ -35,17 +35,18 @@ public class ScanActivity extends AppCompatActivity {
 
     // Required for video augmentation
     private boolean isTracking = false;
-    private boolean augmentVideo = false;
+    private boolean augmentVideoFlag = false;
+    private AugmentVideo augmentVideo;
 
     // Variable that stores Marker detected in previous frame
-    AugmentedImage currentMarker = null;
+    private AugmentedImage currentMarker = null;
 
     // Arraylist to store image details
-    ArrayList<ImageDetails> imageDetailsArrayList;
+    private ArrayList<ImageDetails> imageDetailsArrayList;
 
     // Layout for loading bar
-    RelativeLayout loadingBar;
-    TextView loadingText;
+    private RelativeLayout loadingBar;
+    private TextView loadingText;
 
     private final Map<AugmentedImage, AugmentedImageNode> augmentedImageMap = new HashMap<>();
 
@@ -64,6 +65,9 @@ public class ScanActivity extends AppCompatActivity {
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
         scannerView = findViewById(R.id.scanner_view);
 
+        //Initialize Augment Video player
+        augmentVideo = new AugmentVideo();
+
         if (arFragment != null) {
             scene = arFragment.getArSceneView().getScene();
             scene.addOnUpdateListener(this::onUpdateFrame);
@@ -80,7 +84,13 @@ public class ScanActivity extends AppCompatActivity {
 
         // If a New marker is detected update the current marker
         if(newMarker !=  null && newMarker != currentMarker)
+        {
             currentMarker = newMarker;
+
+            //prepare for change in video playing on marker
+            augmentVideo.setChangeIndexTrue();
+            isTracking = false;
+        }
         if(currentMarker == null) return;
 
         // Work with the marker that is currently in frame
@@ -92,7 +102,6 @@ public class ScanActivity extends AppCompatActivity {
                     setLoadingBarVisible("Image Found. Processing Environment");
                 switch (imageDetailsArrayList.get(currentMarker.getIndex()).redirectTo)
                 {
-//                switch (DBManager.getDownloadedFromImageDetails("redirectTo").get(currentMarker.getIndex())) {
                     case "0": // Open Activity
                         Intent intent = getIntent();
                         String redirectActivityName = intent.getStringExtra("REDIRECT_ACTIVITY_NAME");
@@ -100,7 +109,6 @@ public class ScanActivity extends AppCompatActivity {
                             ComponentName cn = new ComponentName(this, redirectActivityName);
                             Intent newActivity = new Intent().setComponent(cn);
                             newActivity.putExtra("IMAGE_NAME", imageDetailsArrayList.get(currentMarker.getIndex()).imageName);
-//                            newActivity.putExtra("IMAGE_NAME", DBManager.getDownloadedFromImageDetails("imageName").get(currentMarker.getIndex()));
                             startActivity(newActivity);
                             Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Redirecting to Activity : " + redirectActivityName);
                         } else
@@ -109,7 +117,6 @@ public class ScanActivity extends AppCompatActivity {
 
                     case "1": // Open website
                         String website = imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL;
-//                        String website = DBManager.getDownloadedFromImageDetails("redirectURL").get(currentMarker.getIndex());
                         Intent newWebActivity = new Intent(this, RedirectWeb.class);
                         newWebActivity.putExtra("WEBSITE", website);
                         startActivity(newWebActivity);
@@ -118,7 +125,6 @@ public class ScanActivity extends AppCompatActivity {
 
                     case "2": // Open Video
                         String videoURL = imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL;
-//                        String videoURL = DBManager.getDownloadedFromImageDetails("redirectURL").get(currentMarker.getIndex());
                         Intent newVideoActivity = new Intent(this, RedirectVideo.class);
                         newVideoActivity.putExtra("VIDEO_URL", videoURL);
                         startActivity(newVideoActivity);
@@ -131,8 +137,9 @@ public class ScanActivity extends AppCompatActivity {
 
                     case "4": // Augment Video
                         Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting video : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
-                        AugmentVideo.videoAugment(imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL,this);
-                        augmentVideo = true;
+                        augmentVideo.videoAugment(imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL,this);
+                        Log.d("SCAN_ACTIVITY_VIDEO","Video Player Initialized");
+                        augmentVideoFlag = true;
                         break;
                 }
                 break;
@@ -158,20 +165,21 @@ public class ScanActivity extends AppCompatActivity {
                     }
                 }
 
-                if (!augmentedImageMap.containsKey(currentMarker))
+                // Augment 3D model
+                if (!augmentedImageMap.containsKey(currentMarker) && !augmentVideoFlag)
                 {
-                    if(!augmentVideo)
-                    {
                         AugmentedImageNode node = new AugmentedImageNode(this, imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
                         node.setImage(currentMarker);
                         augmentedImageMap.put(currentMarker, node);
                         scene.addChild(node);
-                    }
-                    else if(!isTracking)
-                    {
-                        AugmentVideo.playVideo(currentMarker.createAnchor(currentMarker.getCenterPose()), currentMarker.getExtentX(), currentMarker.getExtentZ(), scene);
-                        isTracking = true;
-                    }
+                }
+
+                // Augment video over 2D plane
+                else if(!isTracking)
+                {
+                    augmentVideo.playVideo(currentMarker.createAnchor(currentMarker.getCenterPose()), currentMarker.getExtentX(), currentMarker.getExtentZ(), scene);
+                    Log.d("SCAN_ACTIVITY_VIDEO","Video is playing");
+                    isTracking = true;
                 }
                 break;
 
