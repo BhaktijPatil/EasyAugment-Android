@@ -1,7 +1,6 @@
 package com.liminal.easy_augment;
 
 // Import statements
-
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +20,7 @@ import com.google.ar.sceneform.FrameTime;
 import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.ux.ArFragment;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +40,9 @@ public class ScanActivity extends AppCompatActivity {
     // Variable that stores Marker detected in previous frame
     AugmentedImage currentMarker = null;
 
+    // Arraylist to store image details
+    ArrayList<ImageDetails> imageDetailsArrayList;
+
     // Layout for loading bar
     RelativeLayout loadingBar;
     TextView loadingText;
@@ -54,6 +56,9 @@ public class ScanActivity extends AppCompatActivity {
 
         // Initializes the loading bar
         setupLoadingBar();
+
+        // Load the imageDetails table
+        imageDetailsArrayList = DBManager.getDownloadedFromImageDetails();
 
         // Load Augmented Image Fragment
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
@@ -78,21 +83,24 @@ public class ScanActivity extends AppCompatActivity {
             currentMarker = newMarker;
         if(currentMarker == null) return;
 
+        // Work with the marker that is currently in frame
         switch (currentMarker.getTrackingState()) {
             case PAUSED: //image has been detected.
                 Log.d("SCAN_ACTIVITY_TRACKING_STATE", "tracking state : PAUSED");
 
                 if(loadingBar.getVisibility() == View.GONE)
                     setLoadingBarVisible("Image Found. Processing Environment");
-
-                switch (DBManager.getDownloadedFromImageDetails("redirectTo").get(currentMarker.getIndex())) {
+                switch (imageDetailsArrayList.get(currentMarker.getIndex()).redirectTo)
+                {
+//                switch (DBManager.getDownloadedFromImageDetails("redirectTo").get(currentMarker.getIndex())) {
                     case "0": // Open Activity
                         Intent intent = getIntent();
                         String redirectActivityName = intent.getStringExtra("REDIRECT_ACTIVITY_NAME");
                         if (redirectActivityName != null) {
                             ComponentName cn = new ComponentName(this, redirectActivityName);
                             Intent newActivity = new Intent().setComponent(cn);
-                            newActivity.putExtra("IMAGE_NAME", DBManager.getDownloadedFromImageDetails("imageName").get(currentMarker.getIndex()));
+                            newActivity.putExtra("IMAGE_NAME", imageDetailsArrayList.get(currentMarker.getIndex()).imageName);
+//                            newActivity.putExtra("IMAGE_NAME", DBManager.getDownloadedFromImageDetails("imageName").get(currentMarker.getIndex()));
                             startActivity(newActivity);
                             Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Redirecting to Activity : " + redirectActivityName);
                         } else
@@ -100,7 +108,8 @@ public class ScanActivity extends AppCompatActivity {
                         break;
 
                     case "1": // Open website
-                        String website = DBManager.getDownloadedFromImageDetails("redirectURL").get(currentMarker.getIndex());
+                        String website = imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL;
+//                        String website = DBManager.getDownloadedFromImageDetails("redirectURL").get(currentMarker.getIndex());
                         Intent newWebActivity = new Intent(this, RedirectWeb.class);
                         newWebActivity.putExtra("WEBSITE", website);
                         startActivity(newWebActivity);
@@ -108,7 +117,8 @@ public class ScanActivity extends AppCompatActivity {
                         break;
 
                     case "2": // Open Video
-                        String videoURL = DBManager.getDownloadedFromImageDetails("redirectURL").get(currentMarker.getIndex());
+                        String videoURL = imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL;
+//                        String videoURL = DBManager.getDownloadedFromImageDetails("redirectURL").get(currentMarker.getIndex());
                         Intent newVideoActivity = new Intent(this, RedirectVideo.class);
                         newVideoActivity.putExtra("VIDEO_URL", videoURL);
                         startActivity(newVideoActivity);
@@ -116,12 +126,12 @@ public class ScanActivity extends AppCompatActivity {
                         break;
 
                     case "3": // Augment Model
-                        Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting model : " + DBManager.getDownloadedFromImageDetails("redirectURL").get(currentMarker.getIndex()));
+                        Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting model : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
                         break;
 
                     case "4": // Augment Video
-                        Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting video : " + DBManager.getDownloadedFromImageDetails("redirectURL").get(currentMarker.getIndex()));
-                        AugmentVideo.videoAugment(DBManager.getDownloadedFromImageDetails("redirectURL").get(currentMarker.getIndex()),this);
+                        Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting video : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
+                        AugmentVideo.videoAugment(imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL,this);
                         augmentVideo = true;
                         break;
                 }
@@ -152,7 +162,7 @@ public class ScanActivity extends AppCompatActivity {
                 {
                     if(!augmentVideo)
                     {
-                        AugmentedImageNode node = new AugmentedImageNode(this, DBManager.getDownloadedFromImageDetails("redirectURL").get(currentMarker.getIndex()));
+                        AugmentedImageNode node = new AugmentedImageNode(this, imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
                         node.setImage(currentMarker);
                         augmentedImageMap.put(currentMarker, node);
                         scene.addChild(node);
@@ -170,105 +180,6 @@ public class ScanActivity extends AppCompatActivity {
                 augmentedImageMap.remove(currentMarker);
                 break;
         }
-
-
-
-//        Collection<AugmentedImage> updatedAugmentedImages = frame.getUpdatedTrackables(AugmentedImage.class);
-//
-//        for (AugmentedImage augmentedImage : updatedAugmentedImages) {
-//            switch (augmentedImage.getTrackingState()) {
-//                case PAUSED: //image has been detected.
-//                    Log.d("SCAN_ACTIVITY_TRACKING_STATE", "tracking state : PAUSED");
-//
-//                    if(loadingBar.getVisibility() == View.GONE)
-//                        setLoadingBarVisible("Image Found. Processing Environment");
-//
-//                    switch (DBManager.getDownloadedFromImageDetails("redirectTo").get(augmentedImage.getIndex())) {
-//                        case "0": // Open Activity
-//                            Intent intent = getIntent();
-//                            String redirectActivityName = intent.getStringExtra("REDIRECT_ACTIVITY_NAME");
-//                            if (redirectActivityName != null) {
-//                                ComponentName cn = new ComponentName(this, redirectActivityName);
-//                                Intent newActivity = new Intent().setComponent(cn);
-//                                newActivity.putExtra("IMAGE_NAME", DBManager.getDownloadedFromImageDetails("imageName").get(augmentedImage.getIndex()));
-//                                startActivity(newActivity);
-//                                Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Redirecting to Activity : " + redirectActivityName);
-//                            } else
-//                                Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Redirect Activity name is not specified");
-//                            break;
-//
-//                        case "1": // Open website
-//                            String website = DBManager.getDownloadedFromImageDetails("redirectURL").get(augmentedImage.getIndex());
-//                            Intent newWebActivity = new Intent(this, RedirectWeb.class);
-//                            newWebActivity.putExtra("WEBSITE", website);
-//                            startActivity(newWebActivity);
-//                            Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Redirecting to Website : " + website);
-//                            break;
-//
-//                        case "2": // Open Video
-//                            String videoURL = DBManager.getDownloadedFromImageDetails("redirectURL").get(augmentedImage.getIndex());
-//                            Intent newVideoActivity = new Intent(this, RedirectVideo.class);
-//                            newVideoActivity.putExtra("VIDEO_URL", videoURL);
-//                            startActivity(newVideoActivity);
-//                            Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Redirecting to Video : " + videoURL);
-//                            break;
-//
-//                        case "3": // Augment Model
-//                            Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting model : " + DBManager.getDownloadedFromImageDetails("redirectURL").get(augmentedImage.getIndex()));
-//                            break;
-//
-//                        case "4": // Augment Video
-//                            Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting video : " + DBManager.getDownloadedFromImageDetails("redirectURL").get(augmentedImage.getIndex()));
-//                            AugmentVideo.videoAugment(DBManager.getDownloadedFromImageDetails("redirectURL").get(augmentedImage.getIndex()),this);
-//                            augmentVideo = true;
-//                            break;
-//                    }
-//                    break;
-//
-//                case TRACKING: // Image is being tracked
-//                    Log.d("SCAN_ACTIVITY_TRACKING_STATE", "tracking state : " + augmentedImage.getTrackingMethod());
-//
-//                    // Set visibility of scanner depending on tracking status
-//                    if(augmentedImage.getTrackingMethod() == AugmentedImage.TrackingMethod.FULL_TRACKING)
-//                    {
-//                        if(loadingBar.getVisibility() == View.VISIBLE)
-//                        {
-//                            loadingBar.setVisibility(View.GONE);
-//                            scannerView.setVisibility(View.GONE);
-//                        }
-//                    }
-//                    else if(augmentedImage.getTrackingMethod() == AugmentedImage.TrackingMethod.LAST_KNOWN_POSE)
-//                    {
-//                        if(loadingBar.getVisibility() == View.GONE)
-//                        {
-//                            scannerView.setVisibility(View.VISIBLE);
-//                            setLoadingBarVisible("Lost Marker. Searching...");
-//                        }
-//                    }
-//
-//                    if (!augmentedImageMap.containsKey(augmentedImage))
-//                    {
-//                        if(!augmentVideo)
-//                        {
-//                            AugmentedImageNode node = new AugmentedImageNode(this, DBManager.getDownloadedFromImageDetails("redirectURL").get(augmentedImage.getIndex()));
-//                            node.setImage(augmentedImage);
-//                            augmentedImageMap.put(augmentedImage, node);
-//                            scene.addChild(node);
-//                        }
-//                        else if(!isTracking)
-//                        {
-//                            AugmentVideo.playVideo(augmentedImage.createAnchor(augmentedImage.getCenterPose()), augmentedImage.getExtentX(), augmentedImage.getExtentZ(), scene);
-//                            isTracking = true;
-//                        }
-//                    }
-//                    break;
-//
-//                case STOPPED: // Image Marker is not present in camera frame
-//                    Log.d("SCAN_ACTIVITY_TRACKING_STATE", "tracking state : STOPPED");
-//                    augmentedImageMap.remove(augmentedImage);
-//                    break;
-//            }
-//        }
     }
 
     // Function to detect markers

@@ -37,7 +37,7 @@ class DBManager {
     }
 
     // Function to get any column from ImageDetails table
-    static ArrayList<String> getDownloadedFromImageDetails(String fieldName) {
+    static ArrayList<String> getDownloadedFromImageDetailsField(String fieldName) {
         // Cursor that stores image names
         Cursor ptr = imgDB.rawQuery("SELECT " + fieldName + " FROM ImageDetails WHERE isDownloaded = 'TRUE'", null);
 
@@ -54,6 +54,24 @@ class DBManager {
 
         return list;
     }
+
+    // Function that returns every row for which Marker is downloaded
+   static ArrayList<ImageDetails> getDownloadedFromImageDetails() {
+       // Cursor that stores image names
+       Cursor ptr = imgDB.rawQuery("SELECT * FROM ImageDetails WHERE isDownloaded = 'TRUE'", null);
+
+       // Arraylist to store field details
+       ArrayList<ImageDetails> imageDetailsArrayList = new ArrayList<>();
+
+       ptr.moveToFirst();
+       while (!ptr.isAfterLast()) {
+           imageDetailsArrayList.add(new ImageDetails(ptr.getString(0), ptr.getString(1), ptr.getString(2), ptr.getString(3), ptr.getString(4)));
+           ptr.moveToNext();
+       }
+       ptr.close();
+
+       return imageDetailsArrayList;
+   }
 
     // Function to update Download status of an image
     static void setDownloadStatus(String imageHash, String downloadStatus) {
