@@ -18,23 +18,25 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 
 class AugmentVideo {
 
-    private static ExternalTexture texture;
-    private static ModelRenderable renderable;
-    private static SimpleExoPlayer player;
+    private ExternalTexture texture;
+    private ModelRenderable renderable;
+    private SimpleExoPlayer player;
+    private DataSource.Factory dataSourceFactory;
+    private boolean changeIndex = false;
 
-    static void videoAugment(String url, Context context){
+    void videoAugment(String url, Context context){
         if(player == null)
         {
+            //Initialize player
             texture = new ExternalTexture();
-            Uri uri = Uri.parse(url);
-            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context, "EasyAugment");
-            MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
             player = new SimpleExoPlayer.Builder(context).build();
+            dataSourceFactory = new DefaultDataSourceFactory(context, "EasyAugment");
+            changeVideo(url,dataSourceFactory);
             player.setVideoSurface(texture.getSurface());
-            player.prepare(mediaSource, false, false);
             player.setRepeatMode(Player.REPEAT_MODE_ALL);
             player.setPlayWhenReady(false);
 
+            //Initialize plane to be augmented
             ModelRenderable
                     .builder()
                     .setSource(context, R.raw.augmented_video_model)
@@ -48,9 +50,12 @@ class AugmentVideo {
                         renderable.setShadowReceiver(false);
                     });
         }
+        if(changeIndex)
+            changeVideo(url,dataSourceFactory);
     }
 
-    static void playVideo(Anchor anchor, float extentX, float extentZ, Scene scene) {
+    // Place plane over marker and set it as video augmentation surface
+    void playVideo(Anchor anchor, float extentX, float extentZ, Scene scene) {
         player.setPlayWhenReady(true);
 
         AnchorNode anchorNode = new AnchorNode(anchor);
@@ -64,4 +69,15 @@ class AugmentVideo {
         scene.addChild(anchorNode);
     }
 
+    // Change video being played over augmented plane
+    private void changeVideo(String url, DataSource.Factory dataSourceFactory) {
+        Uri uri = Uri.parse(url);
+        MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
+        player.prepare(mediaSource, false, false);
+        changeIndex = false;
+    }
+
+    void setChangeIndexTrue(){
+        changeIndex = true;
+    }
 }
