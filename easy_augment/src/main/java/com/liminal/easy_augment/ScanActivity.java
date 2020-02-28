@@ -39,7 +39,7 @@ public class ScanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scan);
 
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
-        scannerView = findViewById(R.id.image_view_fit_to_scan);
+        scannerView = findViewById(R.id.scanner_view);
 
         if (arFragment != null) {
             scene = arFragment.getArSceneView().getScene();
