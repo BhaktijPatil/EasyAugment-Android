@@ -33,8 +33,11 @@ public class ScanActivity extends AppCompatActivity {
 
     private Scene scene;
 
+    // Required for video augmentation
     private boolean isTracking = false;
     private boolean augmentVideo = false;
+
+    // Layout for loading bar
     RelativeLayout loadingBar;
     TextView loadingText;
 
@@ -48,6 +51,7 @@ public class ScanActivity extends AppCompatActivity {
         // Initializes the loading bar
         setupLoadingBar();
 
+        // Load Augmented Image Fragment
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
         scannerView = findViewById(R.id.scanner_view);
 
@@ -144,7 +148,7 @@ public class ScanActivity extends AppCompatActivity {
                             AugmentedImageNode node = new AugmentedImageNode(this, DBManager.getDownloadedFromImageDetails("redirectURL").get(augmentedImage.getIndex()));
                             node.setImage(augmentedImage);
                             augmentedImageMap.put(augmentedImage, node);
-                            arFragment.getArSceneView().getScene().addChild(node);
+                            scene.addChild(node);
                         }
                         else if(!isTracking)
                         {
@@ -187,9 +191,7 @@ public class ScanActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (augmentedImageMap.isEmpty())
-        {
             scannerView.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
