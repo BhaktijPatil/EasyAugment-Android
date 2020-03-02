@@ -132,11 +132,9 @@ public class ScanActivity extends AppCompatActivity {
                         break;
 
                     case "3": // Augment Model
-                        Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting model : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
                         break;
 
                     case "4": // Augment Video
-                        Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting video : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
                         augmentVideo.videoAugment(imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL,this);
                         Log.d("SCAN_ACTIVITY_VIDEO","Video Player Initialized");
                         augmentVideoFlag = true;
@@ -168,15 +166,17 @@ public class ScanActivity extends AppCompatActivity {
                 // Augment 3D model
                 if (!augmentedImageMap.containsKey(currentMarker) && !augmentVideoFlag)
                 {
-                        AugmentedImageNode node = new AugmentedImageNode(this, imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
-                        node.setImage(currentMarker);
-                        augmentedImageMap.put(currentMarker, node);
-                        scene.addChild(node);
+                    Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting model : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
+                    AugmentedImageNode node = new AugmentedImageNode(this, imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
+                    node.setImage(currentMarker);
+                    augmentedImageMap.put(currentMarker, node);
+                    scene.addChild(node);
                 }
 
                 // Augment video over 2D plane
-                else if(!isTracking)
+                else if(!isTracking && augmentVideoFlag)
                 {
+                    Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting video : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
                     augmentVideo.playVideo(currentMarker.createAnchor(currentMarker.getCenterPose()), currentMarker.getExtentX(), currentMarker.getExtentZ(), scene);
                     Log.d("SCAN_ACTIVITY_VIDEO","Video is playing");
                     isTracking = true;
