@@ -61,13 +61,14 @@ public class ScanActivity extends AppCompatActivity {
         // Load the imageDetails table
         imageDetailsArrayList = DBManager.getDownloadedFromImageDetails();
 
-        // Load Augmented Image Fragment
-        arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+        // Load Scanner template
         scannerView = findViewById(R.id.scanner_view);
 
         //Initialize Augment Video player
         augmentVideo = new AugmentVideo();
 
+        // Load Augmented Image Fragment
+        arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
         if (arFragment != null) {
             scene = arFragment.getArSceneView().getScene();
             scene.addOnUpdateListener(this::onUpdateFrame);
