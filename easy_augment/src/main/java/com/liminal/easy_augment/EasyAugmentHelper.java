@@ -8,11 +8,13 @@ public class EasyAugmentHelper {
     private String devKey;
     private Context appContext;
     private String redirectActivityName = null;
+    static String packageName;
 
     // Constructor takes in developer key and application context as necessary arguments
     public EasyAugmentHelper(String devKey, Context appContext) {
         this.devKey = devKey;
         this.appContext = appContext;
+        packageName = appContext.getApplicationContext().getPackageName();
     }
 
     // Constructor that takes extra RedirectActivityName parameter if needed
@@ -20,6 +22,7 @@ public class EasyAugmentHelper {
         this.devKey = devKey;
         this.appContext = appContext;
         this.redirectActivityName = redirectActivityName;
+        packageName = appContext.getApplicationContext().getPackageName();
     }
 
     // Function to load marker images from Liminal database

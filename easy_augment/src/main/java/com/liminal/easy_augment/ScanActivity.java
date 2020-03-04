@@ -12,12 +12,16 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.ar.core.Anchor;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.core.Frame;
 import com.bumptech.glide.Glide;
 import com.google.ar.core.TrackingState;
+import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.FrameTime;
 import com.google.ar.sceneform.Scene;
+import com.google.ar.sceneform.rendering.FixedWidthViewSizer;
+import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 
 import java.util.ArrayList;
@@ -35,7 +39,6 @@ public class ScanActivity extends AppCompatActivity {
 
     // Required for video augmentation
     private boolean isTracking = false;
-    private boolean augmentVideoFlag = false;
     private AugmentVideo augmentVideo;
 
     // Variable that stores Marker detected in previous frame
@@ -48,7 +51,11 @@ public class ScanActivity extends AppCompatActivity {
     private RelativeLayout loadingBar;
     private TextView loadingText;
 
+    //Augmentation flag: 0 - 3D model , 1 - video , 2 - view
+    private int augmentFlag;
+
     private final Map<AugmentedImage, AugmentedImageNode> augmentedImageMap = new HashMap<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,14 +140,20 @@ public class ScanActivity extends AppCompatActivity {
 
                     case "3": // Augment Model
                         Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting model : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
+                        augmentFlag = 0;
                         break;
 
                     case "4": // Augment Video
                         Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting video : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
                         augmentVideo.videoAugment(imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL,this);
                         Log.d("SCAN_ACTIVITY_VIDEO","Video Player Initialized");
-                        augmentVideoFlag = true;
+//                        augmentVideoFlag = true;
+                        augmentFlag = 1;
                         break;
+
+                    case "5": //Augment View
+                        Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting view : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
+                        augmentFlag = 2;
                 }
                 break;
 
@@ -165,21 +178,35 @@ public class ScanActivity extends AppCompatActivity {
                     }
                 }
 
-                // Augment 3D model
-                if (!augmentedImageMap.containsKey(currentMarker) && !augmentVideoFlag)
+                switch (augmentFlag)
                 {
-                        AugmentedImageNode node = new AugmentedImageNode(this, imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
-                        node.setImage(currentMarker);
-                        augmentedImageMap.put(currentMarker, node);
-                        scene.addChild(node);
-                }
+                    case 0: //Augment Model
+                        if (!augmentedImageMap.containsKey(currentMarker))
+                        {
+                            AugmentedImageNode node = new AugmentedImageNode(this, imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
+                            node.setImage(currentMarker);
+                            augmentedImageMap.put(currentMarker, node);
+                            scene.addChild(node);
+                        }
+                        break;
 
-                // Augment video over 2D plane
-                else if(!isTracking)
-                {
-                    augmentVideo.playVideo(currentMarker.createAnchor(currentMarker.getCenterPose()), currentMarker.getExtentX(), currentMarker.getExtentZ(), scene);
-                    Log.d("SCAN_ACTIVITY_VIDEO","Video is playing");
-                    isTracking = true;
+                    case 1: //Augment Video
+                        if(!isTracking)
+                        {
+                            augmentVideo.playVideo(currentMarker.createAnchor(currentMarker.getCenterPose()), currentMarker.getExtentX(), currentMarker.getExtentZ(), scene);
+                            Log.d("SCAN_ACTIVITY_VIDEO", "Video is playing");
+                            isTracking = true;
+                        }
+                        break;
+
+                    case 2: //Augment View
+                        if(!isTracking)
+                        {
+                            createViewRenderable(currentMarker.createAnchor(currentMarker.getCenterPose()),imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
+                            Log.d("SCAN_ACTIVITY_VIEW", "View Augmented");
+                            isTracking = true;
+                        }
+                        break;
                 }
                 break;
 
@@ -188,6 +215,26 @@ public class ScanActivity extends AppCompatActivity {
                 augmentedImageMap.remove(currentMarker);
                 break;
         }
+    }
+
+    private void createViewRenderable(Anchor anchor, String layoutName) {
+        Log.d("SCAN_ACTIVITY_VIEW","Creating view");
+        FixedWidthViewSizer viewSizer = new FixedWidthViewSizer(0.1f);
+        ViewRenderable
+                .builder()
+                .setView(this, getResources().getIdentifier(layoutName,"layout",EasyAugmentHelper.packageName))
+                .build()
+                .thenAccept(viewRenderable -> {
+                    viewRenderable.setSizer(viewSizer);
+                    addtoScene(viewRenderable,anchor);
+                });
+    }
+
+    private void addtoScene(ViewRenderable viewRenderable, Anchor anchor) {
+        Log.d("SCAN_ACTIVITY_VIEW","Adding anchor");
+        AnchorNode anchorNode = new AnchorNode(anchor);
+        anchorNode.setRenderable(viewRenderable);
+        scene.addChild(anchorNode);
     }
 
     // Function to detect markers
