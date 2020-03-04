@@ -12,16 +12,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.ar.core.Anchor;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.core.Frame;
 import com.bumptech.glide.Glide;
 import com.google.ar.core.TrackingState;
-import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.FrameTime;
 import com.google.ar.sceneform.Scene;
-import com.google.ar.sceneform.rendering.FixedWidthViewSizer;
-import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 
 import java.util.ArrayList;
@@ -38,7 +34,7 @@ public class ScanActivity extends AppCompatActivity {
     private Scene scene;
 
     // Required for video augmentation
-    private boolean isTracking = false;
+//    private boolean isTracking = false;
     private AugmentVideo augmentVideo;
 
     // Variable that stores Marker detected in previous frame
@@ -53,6 +49,9 @@ public class ScanActivity extends AppCompatActivity {
 
     //Augmentation flag: 0 - 3D model , 1 - video , 2 - view
     private int augmentFlag;
+
+    //Required for view augmentation
+    private AugmentView augmentView;
 
     private final Map<AugmentedImage, AugmentedImageNode> augmentedImageMap = new HashMap<>();
 
@@ -75,6 +74,8 @@ public class ScanActivity extends AppCompatActivity {
         //Initialize Augment Video player
         augmentVideo = new AugmentVideo();
 
+        augmentView = new AugmentView();
+
         if (arFragment != null) {
             scene = arFragment.getArSceneView().getScene();
             scene.addOnUpdateListener(this::onUpdateFrame);
@@ -96,7 +97,8 @@ public class ScanActivity extends AppCompatActivity {
 
             //prepare for change in video playing on marker
             augmentVideo.setChangeIndexTrue();
-            isTracking = false;
+            augmentVideo.isTracking = false;
+            augmentView.isTracking = false;
         }
         if(currentMarker == null) return;
 
@@ -147,7 +149,6 @@ public class ScanActivity extends AppCompatActivity {
                         Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting video : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
                         augmentVideo.videoAugment(imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL,this);
                         Log.d("SCAN_ACTIVITY_VIDEO","Video Player Initialized");
-//                        augmentVideoFlag = true;
                         augmentFlag = 1;
                         break;
 
@@ -191,20 +192,22 @@ public class ScanActivity extends AppCompatActivity {
                         break;
 
                     case 1: //Augment Video
-                        if(!isTracking)
+                        if(!augmentVideo.isTracking)
                         {
                             augmentVideo.playVideo(currentMarker.createAnchor(currentMarker.getCenterPose()), currentMarker.getExtentX(), currentMarker.getExtentZ(), scene);
                             Log.d("SCAN_ACTIVITY_VIDEO", "Video is playing");
-                            isTracking = true;
+                            augmentVideo.isTracking = true;
                         }
                         break;
 
                     case 2: //Augment View
-                        if(!isTracking)
+                        if(!augmentView.isTracking)
                         {
-                            createViewRenderable(currentMarker.createAnchor(currentMarker.getCenterPose()),imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
+                            //Get view ID of layout to be rendered
+                            int viewID = getResources().getIdentifier(imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL,"layout",EasyAugmentHelper.packageName);
+                            augmentView.createViewRenderable(currentMarker.createAnchor(currentMarker.getCenterPose()),viewID,scene,this);
                             Log.d("SCAN_ACTIVITY_VIEW", "View Augmented");
-                            isTracking = true;
+                            augmentView.isTracking = true;
                         }
                         break;
                 }
@@ -215,26 +218,6 @@ public class ScanActivity extends AppCompatActivity {
                 augmentedImageMap.remove(currentMarker);
                 break;
         }
-    }
-
-    private void createViewRenderable(Anchor anchor, String layoutName) {
-        Log.d("SCAN_ACTIVITY_VIEW","Creating view");
-        FixedWidthViewSizer viewSizer = new FixedWidthViewSizer(0.1f);
-        ViewRenderable
-                .builder()
-                .setView(this, getResources().getIdentifier(layoutName,"layout",EasyAugmentHelper.packageName))
-                .build()
-                .thenAccept(viewRenderable -> {
-                    viewRenderable.setSizer(viewSizer);
-                    addtoScene(viewRenderable,anchor);
-                });
-    }
-
-    private void addtoScene(ViewRenderable viewRenderable, Anchor anchor) {
-        Log.d("SCAN_ACTIVITY_VIEW","Adding anchor");
-        AnchorNode anchorNode = new AnchorNode(anchor);
-        anchorNode.setRenderable(viewRenderable);
-        scene.addChild(anchorNode);
     }
 
     // Function to detect markers

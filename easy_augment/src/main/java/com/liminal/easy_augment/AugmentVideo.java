@@ -23,6 +23,7 @@ class AugmentVideo {
     private SimpleExoPlayer player;
     private DataSource.Factory dataSourceFactory;
     private boolean changeIndex = false;
+    boolean isTracking = false;
 
     void videoAugment(String url, Context context){
         if(player == null)
