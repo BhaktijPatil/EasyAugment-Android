@@ -34,7 +34,6 @@ public class ScanActivity extends AppCompatActivity {
     private Scene scene;
 
     // Required for video augmentation
-//    private boolean isTracking = false;
     private AugmentVideo augmentVideo;
 
     // Variable that stores Marker detected in previous frame
@@ -74,7 +73,7 @@ public class ScanActivity extends AppCompatActivity {
         //Initialize Augment Video player
         augmentVideo = new AugmentVideo();
 
-        augmentView = new AugmentView();
+        augmentView = new AugmentView(arFragment,this);
 
         if (arFragment != null) {
             scene = arFragment.getArSceneView().getScene();
@@ -205,7 +204,7 @@ public class ScanActivity extends AppCompatActivity {
                         {
                             //Get view ID of layout to be rendered
                             int viewID = getResources().getIdentifier(imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL,"layout",EasyAugmentHelper.packageName);
-                            augmentView.createViewRenderable(currentMarker.createAnchor(currentMarker.getCenterPose()),viewID,scene,this);
+                            augmentView.createViewRenderable(currentMarker.createAnchor(currentMarker.getCenterPose()),viewID);
                             Log.d("SCAN_ACTIVITY_VIEW", "View Augmented");
                             augmentView.isTracking = true;
                         }
