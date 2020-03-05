@@ -1,7 +1,9 @@
 package com.liminal.easy_augment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+import android.widget.Button;
 
 import com.google.ar.core.Anchor;
 import com.google.ar.sceneform.AnchorNode;
@@ -26,7 +28,7 @@ class AugmentView {
 
     void createViewRenderable(Anchor anchor, int viewID) {
         Log.d("SCAN_ACTIVITY_VIEW","Creating view");
-        //Fix width of view augmented to 0.1 meters
+        // Fix width of view augmented to 0.1 meters
         FixedWidthViewSizer viewSizer = new FixedWidthViewSizer(0.1f);
         ViewRenderable
                 .builder()
@@ -36,10 +38,11 @@ class AugmentView {
                     viewRenderable.setSizer(viewSizer);
                     viewRenderable.setVerticalAlignment(ViewRenderable.VerticalAlignment.CENTER);
                     addtoScene(viewRenderable,anchor);
+                    AugmentedViewManager augmentedViewManager = new AugmentedViewManager(viewRenderable.getView(), context);
                 });
     }
 
-    //Add View Renderable to AR Scene
+    // Add View Renderable to AR Scene
     private void addtoScene(ViewRenderable viewRenderable, Anchor anchor) {
         Log.d("SCAN_ACTIVITY_VIEW","Adding anchor");
         AnchorNode anchorNode = new AnchorNode(anchor);

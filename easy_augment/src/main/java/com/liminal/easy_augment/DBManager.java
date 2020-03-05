@@ -83,7 +83,7 @@ class DBManager {
     // Function to update the image details table from the remote database
     void updateImageDetails(String devKey) throws JSONException {
         // Create table if it doesn't exist
-        imgDB.execSQL("CREATE TABLE IF NOT EXISTS ImageDetails(imageID INTEGER PRIMARY KEY, imageName VARCHAR, redirectTo INTEGER, redirectURL VARCHAR, imageHash VARCHAR, isDownloaded VARCHAR);");
+        imgDB.execSQL("CREATE TABLE IF NOT EXISTS ImageDetails(imageID INTEGER PRIMARY KEY, imageName VARCHAR, redirectTo INTEGER, redirect VARCHAR, imageHash VARCHAR, isDownloaded VARCHAR);");
 
         ArrayList<Integer> old_img_id_list = getImageIdList();
         ArrayList<Integer> old_img_id_list_copy = getImageIdList();
@@ -98,14 +98,14 @@ class DBManager {
             // Get fields from JSON object
             int imageID = obj.getInt("ImageID");
             int redirectTo = obj.getInt("RedirectTo");
-            String redirectURL = obj.getString("RedirectURL");
+            String redirect = obj.getString("Redirect");
             String imageHash = obj.getString("ImageHash");
             String imageName = obj.getString("ImageName");
 
             // Add new image ids to the list
             new_img_id_list.add(imageID);
             // Insert values into Image details database
-            insertImageDetails(imageID, imageName, redirectTo, redirectURL, imageHash, "FALSE");
+            insertImageDetails(imageID, imageName, redirectTo, redirect, imageHash, "FALSE");
         }
 
         // Create lists that store image ids that need to be deleted or updated
@@ -202,11 +202,11 @@ class DBManager {
             String imageID = ptr.getString(0);
             String imageName = ptr.getString(1);
             String redirectTo = ptr.getString(2);
-            String redirectURL = ptr.getString( 3);
+            String redirect = ptr.getString( 3);
             String imageHash = ptr.getString(4);
             String isDownloaded = ptr.getString(5);
 
-            Log.d("DB_MANAGER_VIEW", "Row " + i + " : " + imageID + " " + redirectTo + " " + redirectURL + " " + imageName + " " + isDownloaded);
+            Log.d("DB_MANAGER_VIEW", "Row " + i + " : " + imageID + " " + redirectTo + " " + redirect + " " + imageName + " " + isDownloaded);
 
             // Go to next row
             ptr.moveToNext();
@@ -216,13 +216,13 @@ class DBManager {
     }
 
     // Function to Insert into ImageDetails
-    private void insertImageDetails(int imageID, String imageName, int redirectTo, String redirectURL, String imageHash, String isDownloaded) {
+    private void insertImageDetails(int imageID, String imageName, int redirectTo, String redirect, String imageHash, String isDownloaded) {
         ContentValues values = new ContentValues();
 
         values.put("imageID", imageID);
         values.put("imageName", imageName);
         values.put("redirectTo", redirectTo);
-        values.put("redirectURL", redirectURL);
+        values.put("redirect", redirect);
         values.put("imageHash", imageHash);
         values.put("isDownloaded", isDownloaded);
         imgDB.insertWithOnConflict("ImageDetails", null, values, CONFLICT_IGNORE);
@@ -238,7 +238,6 @@ class DBManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return null;
     }
 

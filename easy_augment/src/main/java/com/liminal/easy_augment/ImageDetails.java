@@ -6,7 +6,7 @@ class ImageDetails {
     String imageID;
     String imageName;
     String redirectTo;
-    String redirectURL;
+    String redirect;
     String imageHash;
 
     // Constructor to set fields
@@ -15,7 +15,7 @@ class ImageDetails {
         this.imageID = imageID;
         this.imageName = imageName;
         this.redirectTo = redirectTo;
-        this.redirectURL = redirectURL;
+        this.redirect = redirectURL;
         this.imageHash = imageHash;
     }
 }

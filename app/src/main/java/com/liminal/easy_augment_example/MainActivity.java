@@ -1,7 +1,6 @@
 package com.liminal.easy_augment_example;
 
 // Import statements
-
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -25,6 +24,5 @@ public class MainActivity extends AppCompatActivity {
 
         Button button = findViewById(R.id.button);
         button.setOnClickListener(view -> easyAugmentHelper.activateScanner());
-
     }
 }

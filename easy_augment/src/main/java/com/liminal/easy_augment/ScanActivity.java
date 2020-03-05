@@ -124,7 +124,7 @@ public class ScanActivity extends AppCompatActivity {
                         break;
 
                     case "1": // Open website
-                        String website = imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL;
+                        String website = imageDetailsArrayList.get(currentMarker.getIndex()).redirect;
                         Intent newWebActivity = new Intent(this, RedirectWeb.class);
                         newWebActivity.putExtra("WEBSITE", website);
                         startActivity(newWebActivity);
@@ -132,7 +132,7 @@ public class ScanActivity extends AppCompatActivity {
                         break;
 
                     case "2": // Open Video
-                        String videoURL = imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL;
+                        String videoURL = imageDetailsArrayList.get(currentMarker.getIndex()).redirect;
                         Intent newVideoActivity = new Intent(this, RedirectVideo.class);
                         newVideoActivity.putExtra("VIDEO_URL", videoURL);
                         startActivity(newVideoActivity);
@@ -140,19 +140,19 @@ public class ScanActivity extends AppCompatActivity {
                         break;
 
                     case "3": // Augment Model
-                        Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting model : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
+                        Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting model : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirect);
                         augmentFlag = 0;
                         break;
 
                     case "4": // Augment Video
-                        Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting video : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
-                        augmentVideo.videoAugment(imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL,this);
+                        Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting video : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirect);
+                        augmentVideo.videoAugment(imageDetailsArrayList.get(currentMarker.getIndex()).redirect,this);
                         Log.d("SCAN_ACTIVITY_VIDEO","Video Player Initialized");
                         augmentFlag = 1;
                         break;
 
                     case "5": //Augment View
-                        Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting view : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
+                        Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting view : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirect);
                         augmentFlag = 2;
                 }
                 break;
@@ -183,7 +183,7 @@ public class ScanActivity extends AppCompatActivity {
                     case 0: //Augment Model
                         if (!augmentedImageMap.containsKey(currentMarker))
                         {
-                            AugmentedImageNode node = new AugmentedImageNode(this, imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL);
+                            AugmentedImageNode node = new AugmentedImageNode(this, imageDetailsArrayList.get(currentMarker.getIndex()).redirect);
                             node.setImage(currentMarker);
                             augmentedImageMap.put(currentMarker, node);
                             scene.addChild(node);
@@ -203,7 +203,7 @@ public class ScanActivity extends AppCompatActivity {
                         if(!augmentView.isTracking)
                         {
                             //Get view ID of layout to be rendered
-                            int viewID = getResources().getIdentifier(imageDetailsArrayList.get(currentMarker.getIndex()).redirectURL,"layout",EasyAugmentHelper.packageName);
+                            int viewID = getResources().getIdentifier(imageDetailsArrayList.get(currentMarker.getIndex()).redirect,"layout",EasyAugmentHelper.packageName);
                             augmentView.createViewRenderable(currentMarker.createAnchor(currentMarker.getCenterPose()),viewID);
                             Log.d("SCAN_ACTIVITY_VIEW", "View Augmented");
                             augmentView.isTracking = true;
